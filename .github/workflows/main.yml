@@ -6,8 +6,9 @@ on:
 
   # This runs the job on a schedule
   schedule:
-    # Runs at 5 minutes past the hour, every 3 hours (UTC time)
-    - cron: '5 */3 * * *'
+    # Runs at 5 minutes past the hour, every 3 hours (UTC time), the test runs every 5 minutes
+  - cron: '*/6 * * * *'
+   ## - cron: '5 */3 * * *'
 
 jobs:
   scrape:
