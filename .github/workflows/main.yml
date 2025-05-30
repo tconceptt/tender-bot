@@ -13,6 +13,11 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
 
+   
+    # Grant the workflow permission to write to the repository
+    permissions:
+      contents: write
+
     steps:
       # 1. Checks out your repository code so the runner can use it
       - name: Check out repository
