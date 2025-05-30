@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Runs every 5 minutes (UTC time) for testing
-    - cron: '*/5 * * * *'
+    - cron: '0 * * * *'
 
 jobs:
   scrape:
