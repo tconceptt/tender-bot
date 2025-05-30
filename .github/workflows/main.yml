@@ -1,0 +1,51 @@
+name: Check for New Tenders
+
+on:
+  # This allows you to run the job manually from the Actions tab for testing
+  workflow_dispatch:
+
+  # This runs the job on a schedule
+  schedule:
+    # Runs at 5 minutes past the hour, every 3 hours (UTC time)
+    - cron: '5 */3 * * *'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checks out your repository code so the runner can use it
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # 2. Sets up Python
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # 3. Sets up Chrome for Selenium to use
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
+
+      # 4. Installs the necessary Python libraries
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "python-telegram-bot==13.15" selenium webdriver-manager
+
+      # 5. Runs your actual Python script
+      - name: Run the tender scraper
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python tender_bot.py
+
+      # 6. Commits the updated sent_tenders.json file back to the repository
+      - name: Commit and push if files changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add sent_tenders.json
+          # The following command only commits if the file has actually changed
+          git diff --quiet --cached || git commit -m "Update sent tenders list"
+          git push
